@@ -1,0 +1,7 @@
+client/node_modules
+client/package-lock.json
+server/node_modules
+server/nodemon.json
+server/package-lock.json
+server/student.json
+server/template.json
