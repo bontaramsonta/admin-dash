@@ -16,9 +16,33 @@ export default new Router({
       component: layout,
       children: [
         {
-          path: '',
-          name: 'dashboard',
-          component: () => import('@/pages/dashboard'),
+          path: 'hod',
+          name: 'hod',
+          component: () => import('@/pages/dashboard/hod'),
+          beforeEnter:(to, from, next)=>{
+            if(store.state.token){
+              next()
+            }else{
+              next('/login')
+            }
+          }
+        },
+        {
+          path: 'hod/institution',
+          name: 'institution',
+          component: () => import('@/pages/dashboard/hod/institution'),
+          beforeEnter:(to, from, next)=>{
+            if(store.state.token){
+              next()
+            }else{
+              next('/login')
+            }
+          }
+        },
+        {
+          path: 'staff',
+          name: 'staff',
+          component: () => import('@/pages/dashboard/hod'),
           beforeEnter:(to, from, next)=>{
             if(store.state.token){
               next()

@@ -7,7 +7,7 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state:{
-    admin:{},
+    admin:null,
     token:window.localStorage.getItem('token'),
     institutionDetails:{},
     students:[]
@@ -21,7 +21,10 @@ export default new Vuex.Store({
     },
     get_students(state){
       return state.students
-    }
+    },
+    get_institution(state){
+      return state.institutionDetails
+    },
   }
   ,
   mutations:{
@@ -40,6 +43,38 @@ export default new Vuex.Store({
     }
   },
   actions:{
+    async FETCH_STUDENTS(context){
+      try{
+        // check for token in local storage
+        let tokenstring = context.state.token
+        console.log(tokenstring);
+        if(tokenstring!=null){
+          // get admin
+          const response = await axios.get('http://localhost:8001/institution/add/new',
+          {headers:{
+            'authorization':`Bearer ${tokenstring}`
+          }});
+          if (response.status !== 200) {
+            throw new Error(`${response.status} error when fetching token!`);
+          }
+          context.commit('set_admin', response.data);
+
+        }else{
+          //
+        }
+      }catch(err){
+        if (err.response) {
+          // client received an error response (5xx, 4xx)
+          console.log("red",err.response);
+          eventbus.$emit('admin failed')
+        } else if (err.request) {
+          // client never received a response, or request never left
+          eventbus.$emit('admin failed')
+        } else {
+          // anything else
+        }
+      }
+    },
     async FETCH_ADMIN(context){
       try{
         // check for token in local storage
@@ -55,16 +90,27 @@ export default new Vuex.Store({
             throw new Error(`${response.status} error when fetching token!`);
           }
           context.commit('set_admin', response.data);
+          eventbus.$emit('admin success',{loa:response.data.loa})
         }else{
-          //
+          eventbus.$emit('admin failed',{
+            title:"Profile fetch failed",
+            text:"please login again"
+          })
         }
       }catch(err){
         if (err.response) {
           // client received an error response (5xx, 4xx)
           console.log("red",err.response);
+          eventbus.$emit('admin failed',{
+            title:"Profile fetch failed",
+            text:"please login again"
+          })
         } else if (err.request) {
           // client never received a response, or request never left
-          console.log("blue");
+          eventbus.$emit('admin failed',{
+            title:"Profile fetch failed",
+            text:"please login again"
+          })
         } else {
           // anything else
         }
@@ -106,5 +152,38 @@ export default new Vuex.Store({
         }
       }
     },
+    async FETCH_INSTITUTION(context){
+      console.log("fetch institution called");
+      try{
+        if(context.state.token!=null){
+        const response = await axios.post('http://localhost:8001/institution/get/6557',{
+          headers:{
+            'authorization':`Bearer ${context.state.token}`
+          }
+        })
+        if (response.status !== 200) {
+          throw new Error(`${response.status} error when fetching institution!`);
+        }
+        context.commit('set_institution', response.data);
+        eventbus.$emit('institution success')
+        }else{
+          eventbus.$emit('institution failed')
+        }
+      }catch(err){
+        if (err.response) {
+          // client received an error response (5xx, 4xx)
+          console.log("red",err.response);
+          eventbus.$emit('institution fetch failed')
+        } else if (err.request) {
+          // client never received a response, or request never left
+          console.log("blue",err.request);
+        } else {
+          eventbus.$emit('institution fetch failed',{
+            title:"Institution fetch failed",
+            text:"please login again"
+          })
+        }
+      }
+    }
   }
 })

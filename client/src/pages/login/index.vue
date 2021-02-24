@@ -56,7 +56,7 @@ export default {
     }
   },
   computed:{
-    ...mapGetters(['get_token'])
+    ...mapGetters(['get_token','get_admin'])
   },
   methods:{
     handleSubmit(){
@@ -71,7 +71,18 @@ export default {
         this.$store.dispatch('FETCH_TOKEN',{phone:this.phone,password:this.password})
         eventbus.$once('login success',()=>{
           console.log("login success");
-          this.$router.push('dashboard')
+          eventbus.$once('admin failed',function(){
+            console.log("admin failed");
+            this.$swal({
+              title:"Profile fetch failed",
+              text:"please login again"
+            })
+          })
+          eventbus.$once('admin success',(payload)=>{
+            console.log("admin success");
+            this.$router.push(`dashboard/${payload.loa}`)
+          })
+          this.$store.dispatch('FETCH_ADMIN')
         })
       }
     }
@@ -79,7 +90,12 @@ export default {
   mounted(){
     eventbus.$on('login failed',function(){
       console.log("login failed");
-      this.$swal("login failed")
+      this.$swal({
+        icon:'error',
+        title:"login failed",
+        text:"invalid input",
+        showConfirmButton:false
+      })
     })
   },
 }

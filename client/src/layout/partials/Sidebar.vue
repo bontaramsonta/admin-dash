@@ -8,10 +8,10 @@
               <div>
                 <div class="d-flex align-items-center">
                   <div class="sidebar-profile-img">
-                    <img src="@/assets/images/faces/face28.png" alt="image">
+                    <b-avatar variant="info" style="height:inherit" :src="get_admin.img"></b-avatar>
                   </div>
                   <div class="sidebar-profile-text">
-                    <p class="mb-1">Henry Klein</p>
+                    <p class="mb-1">{{ get_admin.name | nonNull }}</p>
                   </div>
                 </div>
               </div>
@@ -20,9 +20,15 @@
           </div>
         </li>
         <li class="nav-item" v-on:click="collapseAll">
-          <router-link class="nav-link" to="/">
+          <router-link class="nav-link" :to="`/dashboard/${get_admin.loa}`">
             <span class="icon-bg"><i class="mdi mdi-cube menu-icon"></i></span>
             <span class="menu-title">Dashboard</span>
+          </router-link>
+        </li>
+        <li class="nav-item">
+          <router-link class="nav-link" :to="`/dashboard/${this.get_admin.loa}/institution`">
+            <span class="icon-bg"><i class="mdi mdi-bank menu-icon"></i></span>
+            <span class="menu-title">Institution</span>
           </router-link>
         </li>
         <li class="nav-item sidebar-user-actions">
@@ -37,6 +43,8 @@
 </template>
 
 <script>
+import {mapGetters} from 'vuex'
+
 export default {
   name: 'sidebar',
  data () {
@@ -48,7 +56,18 @@ export default {
     ]
     }
   },
-
+  computed:{
+    ...mapGetters(['get_admin'])
+  },
+  filters:{
+    nonNull:function(value){
+      if(value!=''){
+        return value
+      }else{
+        return "guest"
+      }
+    }
+  },
   methods: {
     collapseAll() {
       var exp_element = document.getElementsByClassName("show");

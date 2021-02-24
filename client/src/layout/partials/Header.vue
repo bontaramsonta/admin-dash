@@ -56,17 +56,17 @@
           <template slot="button-content">
             <span class="nav-link dropdown-toggle" id="profileDropdown" href="javascript:void(0);" data-toggle="dropdown" aria-expanded="false">
               <div class="nav-profile-img">
-                <img src="@/assets/images/faces/face28.png" alt="image">
+                <b-avatar variant="info" style="height:inherit" :src="get_admin.img"></b-avatar>
                 <span class="availability-status online"></span>
               </div>
               <div class="nav-profile-text">
-                <p class="mb-1 text-black">Henry Klein</p>
+                <p class="mb-1 text-black">{{get_admin.name}}</p>
               </div>
             </span>
           </template>
           <b-dropdown-item class="preview-item p-0">
             <div class="p-3 text-center bg-primary">
-              <img class="img-avatar img-avatar48 img-avatar-thumb" src="@/assets/images/faces/face28.png" alt="">
+                <b-avatar variant="info" :src="get_admin.img"></b-avatar>
             </div>
             <div class="p-2">
             <h5 class="dropdown-header text-uppercase pl-2 text-dark">User Options</h5>
@@ -98,7 +98,7 @@
               <span>Log Out</span>
               <i class="mdi mdi-logout ml-1"></i>
             </a>
-          </div>
+          </div> 
           </b-dropdown-item>
         </b-nav-item-dropdown>
         
@@ -197,8 +197,16 @@
 </template>
 
 <script>
+import {mapGetters} from 'vuex'
+import { BAvatar } from 'bootstrap-vue'
 export default {
   name: 'app-header',
+  components:{
+    BAvatar
+  },
+  computed:{
+    ...mapGetters(['get_admin'])
+  },
   methods: {
     toggleSidebar: () => {
       document.querySelector('body').classList.toggle('sidebar-icon-only');

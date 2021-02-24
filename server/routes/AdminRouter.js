@@ -116,7 +116,7 @@ router.post('/login',(req,res,next)=>{
               phone:doc.phone,
               institution_code:doc.institution_code,
             },process.env.JWT_KEY,{
-              expiresIn:"30m"
+              expiresIn:"3h"
             })
             return res.status(200).json({
               msg:"Auth successful",

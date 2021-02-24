@@ -151,7 +151,7 @@ router.post('/student/delete',(req,res,next)=>{
 
 // ✅ get an institution details
 router.get('/get/:institution',(req,res,next)=>{
-  Institution.findOne({name:req.params.institution},(err,doc)=>{
+  Institution.findOne({code:req.params.institution_code},(err,doc)=>{
     if(!err) {
       return res.status(200).json(doc)
     } else {
@@ -209,9 +209,9 @@ router.post('/student/get',(req,res,next)=>{
 
 // ✅ add a student (modified)
 // body:{ class, section, || ... }
-router.post('/student/add/new/:InstitutionName',(req,res,next)=>{
+router.post('/student/add/new',checkAuth,(req,res,next)=>{
   console.log("hit");
-  Institution.findOne({name:req.params.InstitutionName},(err,doc)=>{
+  Institution.findOne({code:req.userData.institution_code},(err,doc)=>{
     console.log(doc);
     if(!err){
       // check if there is class and section

@@ -6,7 +6,7 @@ import VueSweetalert2 from 'vue-sweetalert2'
 import store from '@/store/store'
  
 Vue.use(BootstrapVue)
-Vue.use(VueSweetalert2,{toast:true})
+Vue.use(VueSweetalert2,{toast:true,position:'bottom',grow:'column'})
 
 Vue.config.productionTip = false
 
